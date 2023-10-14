@@ -1,17 +1,17 @@
 // routes/product.js
 const express = require('express');
-const menRouter = express.Router();
-const {MenModel} = require('../models/men.model');
+const womenRouter = express.Router();
+const {WomenModel} = require('../models/women.model');
 
 //Welcome text
-menRouter.get("/",(req,res)=>{
-    res.send("Welcome to men section...")
+womenRouter.get("/",(req,res)=>{
+    res.send("Welcome to women section...")
 })
 
 // Create a product
-menRouter.post('/products', async (req, res) => {
+womenRouter.post('/products', async (req, res) => {
   try {
-    const product = new MenModel(req.body);
+    const product = new WomenModel(req.body);
     const savedProduct = await product.save();
     res.status(201).json(savedProduct);
   } catch (error) {
@@ -21,9 +21,9 @@ menRouter.post('/products', async (req, res) => {
 });
 
 // Get all products
-menRouter.get('/products', async (req, res) => {
+womenRouter.get('/products', async (req, res) => {
   try {
-    const products = await MenModel.find();
+    const products = await WomenModel.find();
     res.json(products);
   } catch (error) {
     console.error(error);
@@ -32,9 +32,9 @@ menRouter.get('/products', async (req, res) => {
 });
 
 // Get a single product by ID
-menRouter.get('/products/:id', async (req, res) => {
+womenRouter.get('/products/:id', async (req, res) => {
   try {
-    const product = await MenModel.findById(req.params.id);
+    const product = await WomenModel.findById(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -46,9 +46,9 @@ menRouter.get('/products/:id', async (req, res) => {
 });
 
 // Update a product by ID
-menRouter.put('/products/:id', async (req, res) => {
+womenRouter.put('/products/:id', async (req, res) => {
   try {
-    const updatedProduct = await MenModel.findByIdAndUpdate(
+    const updatedProduct = await WomenModel.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
@@ -64,9 +64,9 @@ menRouter.put('/products/:id', async (req, res) => {
 });
 
 // Delete a product by ID
-menRouter.delete('/products/:id', async (req, res) => {
+womenRouter.delete('/products/:id', async (req, res) => {
   try {
-    const deletedProduct = await MenModel.findByIdAndRemove(req.params.id);
+    const deletedProduct = await WomenModel.findByIdAndRemove(req.params.id);
     if (!deletedProduct) {
       return res.status(404).json({ message: 'Product not found' });
     }
@@ -78,9 +78,9 @@ menRouter.delete('/products/:id', async (req, res) => {
 });
 
 // Sort products by price
-menRouter.get('/products/sort/price', async (req, res) => {
+womenRouter.get('/products/sort/price', async (req, res) => {
   try {
-    const sortedProducts = await MenModel.find().sort({ price: 1 });
+    const sortedProducts = await WomenModel.find().sort({ price: 1 });
     res.json(sortedProducts);
   } catch (error) {
     console.error(error);
@@ -88,4 +88,4 @@ menRouter.get('/products/sort/price', async (req, res) => {
   }
 });
 
-module.exports = { menRouter };
+module.exports = { womenRouter };
