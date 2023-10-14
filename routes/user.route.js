@@ -1,6 +1,7 @@
 const express = require("express");
 const { UserModel } = require("../models/user.model");
 const bcrypt = require("bcrypt");
+const nodemailer = require('nodemailer');
 const jwt = require("jsonwebtoken");
 const { BlacklistModel } = require("../models/blacklist.model");
 require("dotenv").config()
@@ -76,7 +77,53 @@ userRouter.get('/logout', async (req, res) => {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  });
+});
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.mail, // Replace with your Gmail email address
+      pass: process.env.mailpass,  // Replace with your Gmail password or an App Password
+    },
+})
+
+userRouter.post('/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+      const user = await UserModel.findOne({ email });
+  
+      if (!user) {
+        return res.status(400).json({ message: 'User not found' });
+      }
+  
+      // Generate a reset token and send a reset email
+      const resetToken = jwt.sign({ userID: user._id, email: user.email }, process.env.secretKey, { expiresIn: '1h' });
+  
+      // Construct the reset link with the resetToken
+      const resetLink = `https://yourwebsite.com/reset-password?token=${resetToken}`;
+  
+      // Email content
+      const mailOptions = {
+        from: process.env.mail,  // Use the same email address as the transporter
+        to: user.email,
+        subject: 'Password Reset',
+        text: `Click the link below to reset your password:\n${resetLink}`,
+      };
+  
+      // Send the email
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).json({ message: 'Failed to send reset email' });
+        }
+  
+        console.log('Reset email sent:', info.response);
+        res.status(200).json({ message: 'Password reset link sent to your email' });
+      });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+});
 
 module.exports = {
     userRouter

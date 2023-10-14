@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { connection } = require("./db");
+const { connection } = require("./Config/db");
 const { userRouter } = require("./routes/user.route");
 const { menRouter } = require("./routes/men.route")
 const { womenRouter } = require("./routes/women.route")
