@@ -100,7 +100,7 @@ userRouter.post('/forgot-password', async (req, res) => {
       const resetToken = jwt.sign({ userID: user._id, email: user.email }, process.env.secretKey, { expiresIn: '1h' });
   
       // Construct the reset link with the resetToken
-      const resetLink = `https://yourwebsite.com/reset-password?token=${resetToken}`;
+      const resetLink = `https://localhost:9500/reset-password?token=${resetToken}`;
   
       // Email content
       const mailOptions = {
