@@ -126,16 +126,14 @@ userRouter.get('/logout', async (req, res) => {
 //     }
 // });
 
-userRouter.post("/reset-password", sendresetPasswordMail)
-
 userRouter.post("/forget-password", async(req,res)=>{
   try{
     const email = req.body.email;
     const userData = await UserModel.findOne({email:email});
 
     if(userData){
-      const randomString = randomString.generate();
-      const data = await UserModel.upadateOne({email:email},{$set:{token:randomString}});
+      const randomstring = randomString.generate();
+      const data = await UserModel.updateOne({email:email},{$set:{token:randomstring}});
       sendresetPasswordMail(userData.email, randomString);
       res.status(200).send({"message":"Please check your inbox of mail and reset your password"})
     } else {
@@ -177,6 +175,8 @@ const sendresetPasswordMail = async(email, token)=>{
     res.status(400).send({"message":err.message})
   }
 }
+
+userRouter.post("/reset-password", sendresetPasswordMail)
 
 module.exports = {
     userRouter
